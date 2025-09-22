@@ -132,7 +132,7 @@ echo.
 echo === Download Test Results ===
 type "%DOWNLOAD_LOGFILE%"
 
-call :processResults "%DOWNLOAD_LOGFILE%" %DOWNLOAD_EXIT_CODE% "download"
+call :processResults "%DOWNLOAD_LOGFILE%" "%DOWNLOAD_EXIT_CODE%" "download"
 
 if "%TESTTYPE%"=="3" goto :uploadTest
 if "%TESTTYPE%"=="1" goto :finalResults
@@ -171,7 +171,7 @@ echo.
 echo === Upload Test Results ===
 type "%UPLOAD_LOGFILE%"
 
-call :processResults "%UPLOAD_LOGFILE%" %UPLOAD_EXIT_CODE% "upload"
+call :processResults "%UPLOAD_LOGFILE%" "%UPLOAD_EXIT_CODE%" "upload"
 
 goto :finalResults
 :finalResults
@@ -194,6 +194,9 @@ goto :eof
 set CURRENT_LOGFILE=%~1
 set CURRENT_EXIT_CODE=%~2
 set TEST_MODE=%~3
+
+:: Ensure exit code is numeric
+if "%CURRENT_EXIT_CODE%"=="" set CURRENT_EXIT_CODE=0
 
 echo.
 echo ------------------------------------------------------------
