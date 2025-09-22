@@ -3,7 +3,16 @@ setlocal enabledelayedexpansion
 
 :: === Command Line Arguments Support ===
 :: Usage: iperf_test.bat [server_ip] [port] [test_size] [parallel_connections]
-:: Example: iperf_test.bat ping.online.net 5201 100M 4
+:: Example: iperf_test.bat ping.online.net 5201 100M 4::= Create enhanced JSON entry if test was successful or had partial success ===
+if "%CURRENT_EXIT_CODE%"=="0" (
+    set TEST_STATUS=success
+) else (
+    if "%PARTIAL_SUCCESS%"=="1" (
+        set TEST_STATUS=partial_success
+    ) else (
+        set TEST_STATUS=failed
+    )
+)
 
 :: === Configurations (optimized for iperf3 v3.1.1) ===
 :: Keep server hardcoded as requested
@@ -132,7 +141,7 @@ echo.
 echo === Download Test Results ===
 type "%DOWNLOAD_LOGFILE%"
 
-call :processResults "%DOWNLOAD_LOGFILE%" "%DOWNLOAD_EXIT_CODE%" "download"
+REM call :processResults "%DOWNLOAD_LOGFILE%" "%DOWNLOAD_EXIT_CODE%" "download"
 
 if "%TESTTYPE%"=="3" goto :uploadTest
 if "%TESTTYPE%"=="1" goto :finalResults
@@ -210,8 +219,8 @@ if %errorlevel% EQU 0 (
     set PARTIAL_SUCCESS=0
 )
 
-if %CURRENT_EXIT_CODE% NEQ 0 (
-    if %PARTIAL_SUCCESS% EQU 1 (
+if "%CURRENT_EXIT_CODE%" NEQ "0" (
+    if "%PARTIAL_SUCCESS%"=="1" (
         echo [WARNING] iperf3 %TEST_MODE% test had connection issues but collected data
         echo Check the results above - bandwidth measurements were successful
     ) else (
@@ -223,9 +232,9 @@ if %CURRENT_EXIT_CODE% NEQ 0 (
 )
 
 :: === Create enhanced JSON entry if test was successful or had partial success ===
-if %CURRENT_EXIT_CODE% EQU 0 (
+if "%CURRENT_EXIT_CODE%"=="0" (
     set TEST_STATUS=success
-) else if %PARTIAL_SUCCESS% EQU 1 (
+) else if "%PARTIAL_SUCCESS%"=="1" (
     set TEST_STATUS=partial_success
 ) else (
     set TEST_STATUS=failed
