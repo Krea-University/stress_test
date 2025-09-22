@@ -205,22 +205,64 @@ if NOT "%TEST_STATUS%"=="failed" (
         set SPEED_FIELD=max_upload_speed_mbps
     )
     
+    :: Extract numeric speed value and convert MBytes/sec to Mbps
+    set SPEED_MBPS=0
+    set SPEED_NUMERIC=Unknown
+    if not "!MAX_SPEED!"=="Unknown" (
+        :: Display what we're parsing for debugging
+        echo Parsing speed: "!MAX_SPEED!"
+        
+        :: Try simple approach - just get first token before space
+        for /f "tokens=1" %%i in ("!MAX_SPEED!") do (
+            set "SPEED_NUMERIC=%%i"
+        )
+        
+        :: Convert to Mbps (multiply by 8, but only if it's a valid number)
+        if defined SPEED_NUMERIC (
+            if not "!SPEED_NUMERIC!"=="Unknown" (
+                :: Strip any decimal part for integer math
+                for /f "delims=." %%j in ("!SPEED_NUMERIC!") do (
+                    set /a "SPEED_MBPS=%%j * 8" 2>nul || set "SPEED_MBPS=0"
+                )
+            )
+        )
+        
+        echo Extracted numeric: "!SPEED_NUMERIC!" converted to: !SPEED_MBPS! Mbps
+    )
+    
+    :: Clean transferred data
+    set TRANSFERRED_CLEAN=Unknown
+    if not "!TOTAL_TRANSFERRED!"=="Unknown" (
+        echo Parsing transferred: "!TOTAL_TRANSFERRED!"
+        :: Extract just the number part
+        for /f "tokens=1" %%k in ("!TOTAL_TRANSFERRED!") do (
+            set "TRANSFERRED_CLEAN=%%k"
+        )
+        echo Cleaned transferred: "!TRANSFERRED_CLEAN!"
+    )
+    
+    :: Create timestamp properly
+    for /f "tokens=1-3 delims=/ " %%a in ('date /t') do set "CLEAN_DATE=%%c-%%a-%%b"
+    for /f "tokens=1-2 delims=: " %%a in ('time /t') do set "CLEAN_TIME=%%a:%%b"
+    set "CLEAN_TIMESTAMP=!CLEAN_DATE!_!CLEAN_TIME::=-!"
+    
     (
-    echo   {
-    echo     "test_name": "%TESTNAME%",
-    echo     "server_ip": "%IP%",
-    echo     "server_port": "%PORT%",
-    echo     "test_size": "%SIZE%",
-    echo     "parallel_connections": "%PARALLEL_CONNECTIONS%",
-    echo     "!SPEED_FIELD!": "%MAX_SPEED%",
-    echo     "total_data_transferred": "%TOTAL_TRANSFERRED%",
-    echo     "test_type": "%TEST_MODE%",
-    echo     "timestamp": "%TIMESTAMP%",
-    echo     "date": "%date%",
-    echo     "time": "%time%",
-    echo     "logfile": "%CURRENT_LOGFILE%",
-    echo     "status": "%TEST_STATUS%"
-    echo   }
+    echo {
+    echo   "test_name": "%TESTNAME%",
+    echo   "server_ip": "%IP%",
+    echo   "server_port": "%PORT%",
+    echo   "test_size": "%SIZE%",
+    echo   "parallel_connections": "%PARALLEL_CONNECTIONS%",
+    echo   "!SPEED_FIELD!": !SPEED_MBPS!,
+    echo   "max_speed_raw": "!SPEED_NUMERIC!",
+    echo   "total_data_transferred": "!TRANSFERRED_CLEAN!",
+    echo   "test_type": "%TEST_MODE%",
+    echo   "timestamp": "!CLEAN_TIMESTAMP!",
+    echo   "date": "!CLEAN_DATE!",
+    echo   "time": "!CLEAN_TIME!",
+    echo   "logfile": "%CURRENT_LOGFILE%",
+    echo   "status": "%TEST_STATUS%"
+    echo }
     ) > "%TESTDIR%\_entry_%TEST_MODE%.json"
 
     :: === Append into per-test results.json ===
@@ -236,8 +278,8 @@ if NOT "%TEST_STATUS%"=="failed" (
     echo.
     echo ✅ %TEST_MODE% test complete and results saved
     echo %TEST_MODE% results saved in: %CURRENT_LOGFILE%
-    echo Maximum %TEST_MODE% Speed: %MAX_SPEED% Mbps
-    echo Data Transferred: %TOTAL_TRANSFERRED%
+    echo Maximum %TEST_MODE% Speed: !SPEED_MBPS! Mbps (!MAX_SPEED! MBytes/sec)
+    echo Data Transferred: !TOTAL_TRANSFERRED!
 ) else (
     echo.
     echo ❌ %TEST_MODE% test failed - results not saved to JSON files
