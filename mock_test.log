@@ -1,0 +1,40 @@
+Connecting to host 34.47.164.139, port 80
+Reverse mode, remote host 34.47.164.139 is sending
+[  4] local 10.10.3.70 port 63959 connected to 34.47.164.139 port 80
+[  6] local 10.10.3.70 port 63960 connected to 34.47.164.139 port 80
+[  8] local 10.10.3.70 port 63961 connected to 34.47.164.139 port 80
+[ 10] local 10.10.3.70 port 63962 connected to 34.47.164.139 port 80
+[ 12] local 10.10.3.70 port 63963 connected to 34.47.164.139 port 80
+[ 14] local 10.10.3.70 port 63964 connected to 34.47.164.139 port 80
+[ 16] local 10.10.3.70 port 63965 connected to 34.47.164.139 port 80
+[ 18] local 10.10.3.70 port 63966 connected to 34.47.164.139 port 80
+[ 20] local 10.10.3.70 port 63967 connected to 34.47.164.139 port 80
+[ 22] local 10.10.3.70 port 63968 connected to 34.47.164.139 port 80
+[ 24] local 10.10.3.70 port 63969 connected to 34.47.164.139 port 80
+[ 26] local 10.10.3.70 port 63970 connected to 34.47.164.139 port 80
+[ 28] local 10.10.3.70 port 63971 connected to 34.47.164.139 port 80
+[ 30] local 10.10.3.70 port 63972 connected to 34.47.164.139 port 80
+[ 32] local 10.10.3.70 port 63973 connected to 34.47.164.139 port 80
+[ 34] local 10.10.3.70 port 63974 connected to 34.47.164.139 port 80
+[ ID] Interval           Transfer     Bandwidth
+[  4]   0.00-1.00   sec  1.69 MBytes  1.69 MBytes/sec
+[  6]   0.00-1.00   sec  1.23 MBytes  1.23 MBytes/sec
+[  8]   0.00-1.00   sec  1.04 MBytes  1.04 MBytes/sec
+[ 10]   0.00-1.00   sec  1.61 MBytes  1.61 MBytes/sec
+[ 12]   0.00-1.00   sec  2.38 MBytes  2.38 MBytes/sec
+[ 14]   0.00-1.00   sec   607 KBytes  0.59 MBytes/sec
+[ 16]   0.00-1.00   sec  2.64 MBytes  2.64 MBytes/sec
+[ 18]   0.00-1.00   sec  2.82 MBytes  2.82 MBytes/sec
+[ 20]   0.00-1.00   sec  3.01 MBytes  3.01 MBytes/sec
+[ 22]   0.00-1.00   sec  2.09 MBytes  2.09 MBytes/sec
+[ 24]   0.00-1.00   sec  2.41 MBytes  2.41 MBytes/sec
+[ 26]   0.00-1.00   sec  1.95 MBytes  1.95 MBytes/sec
+[ 28]   0.00-1.00   sec  3.14 MBytes  3.14 MBytes/sec
+[ 30]   0.00-1.00   sec  1.88 MBytes  1.88 MBytes/sec
+[ 32]   0.00-1.00   sec  1.11 MBytes  1.11 MBytes/sec
+[ 34]   0.00-1.00   sec  1.16 MBytes  1.16 MBytes/sec
+[SUM]   0.00-1.00   sec  30.7 MBytes  30.7 MBytes/sec
+[SUM]   0.00-10.00  sec  500 MBytes  50.0 MBytes/sec                  sender
+[SUM]   0.00-10.00  sec  500 MBytes  50.0 MBytes/sec                  receiver
+
+iperf Done.

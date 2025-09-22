@@ -184,16 +184,22 @@ set TOTAL_TRANSFERRED=Unknown
 
 if exist "%CURRENT_LOGFILE%" (
     :: Get final summary data from the [SUM] line - get the last occurrence
-    for /f "tokens=5,6" %%a in ('findstr /c:"[SUM]" "%CURRENT_LOGFILE%" 2^>nul ^| findstr /c:"sender"') do (
+    :: Line format: [SUM]   0.00-27.33  sec  1.00 GBytes  37.5 MBytes/sec                  sender
+    :: So tokens are: 1=[SUM] 2=interval 3=sec 4=amount 5=unit 6=speed 7=speed_unit 8=sender
+    for /f "tokens=4,5,6,7" %%a in ('findstr /c:"[SUM]" "%CURRENT_LOGFILE%" 2^>nul ^| findstr /c:"sender"') do (
         set TOTAL_TRANSFERRED=%%a
-        set MAX_SPEED=%%b
+        set TRANSFER_UNIT=%%b
+        set MAX_SPEED=%%c
+        set SPEED_UNIT=%%d
     )
     
     :: If no sender line found, try receiver line (for downloads in reverse mode)  
     if "!MAX_SPEED!"=="Unknown" (
-        for /f "tokens=5,6" %%a in ('findstr /c:"[SUM]" "%CURRENT_LOGFILE%" 2^>nul ^| findstr /c:"receiver"') do (
+        for /f "tokens=4,5,6,7" %%a in ('findstr /c:"[SUM]" "%CURRENT_LOGFILE%" 2^>nul ^| findstr /c:"receiver"') do (
             set TOTAL_TRANSFERRED=%%a
-            set MAX_SPEED=%%b
+            set TRANSFER_UNIT=%%b
+            set MAX_SPEED=%%c
+            set SPEED_UNIT=%%d
         )
     )
 )
@@ -234,14 +240,11 @@ if NOT "%TEST_STATUS%"=="failed" (
     set TRANSFERRED_CLEAN=Unknown
     set TRANSFERRED_NUMERIC=Unknown
     if not "!TOTAL_TRANSFERRED!"=="Unknown" (
-        echo Parsing transferred: "!TOTAL_TRANSFERRED!"
-        :: Extract just the number part
-        for /f "tokens=1" %%k in ("!TOTAL_TRANSFERRED!") do (
-            set "TRANSFERRED_NUMERIC=%%k"
-        )
-        :: For consistency, use the numeric value
-        set "TRANSFERRED_CLEAN=!TRANSFERRED_NUMERIC!"
-        echo Cleaned transferred: "!TRANSFERRED_CLEAN!"
+        echo Parsing transferred: "!TOTAL_TRANSFERRED!" !TRANSFER_UNIT!
+        :: Now we have just the number in TOTAL_TRANSFERRED
+        set "TRANSFERRED_NUMERIC=!TOTAL_TRANSFERRED!"
+        set "TRANSFERRED_CLEAN=!TOTAL_TRANSFERRED!"
+        echo Cleaned transferred: "!TRANSFERRED_CLEAN!" !TRANSFER_UNIT!
     )
     
     :: Create timestamp properly
