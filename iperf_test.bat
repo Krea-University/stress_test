@@ -232,12 +232,15 @@ if NOT "%TEST_STATUS%"=="failed" (
     
     :: Clean transferred data
     set TRANSFERRED_CLEAN=Unknown
+    set TRANSFERRED_NUMERIC=Unknown
     if not "!TOTAL_TRANSFERRED!"=="Unknown" (
         echo Parsing transferred: "!TOTAL_TRANSFERRED!"
         :: Extract just the number part
         for /f "tokens=1" %%k in ("!TOTAL_TRANSFERRED!") do (
-            set "TRANSFERRED_CLEAN=%%k"
+            set "TRANSFERRED_NUMERIC=%%k"
         )
+        :: For consistency, use the numeric value
+        set "TRANSFERRED_CLEAN=!TRANSFERRED_NUMERIC!"
         echo Cleaned transferred: "!TRANSFERRED_CLEAN!"
     )
     
